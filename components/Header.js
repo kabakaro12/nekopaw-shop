@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CartLink from "./CartLink";
 
 export default function Header({ locale, t }) {
   const otherLocale = locale === "fr" ? "en" : "fr";
@@ -18,7 +19,10 @@ export default function Header({ locale, t }) {
           <Link href={`/${locale}#contact`}>{t.contact}</Link>
         </nav>
 
-        <Link href={`/${otherLocale}`} className="btn secondary">{t.language}</Link>
+        <div className="header-actions">
+          <CartLink locale={locale} />
+          <Link href={`/${otherLocale}`} className="btn secondary">{t.language}</Link>
+        </div>
       </div>
     </header>
   );
