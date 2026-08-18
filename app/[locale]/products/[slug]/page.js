@@ -2,18 +2,13 @@ import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
 import AddToCartButton from "../../../../components/AddToCartButton";
 import { getDictionary } from "../../../../lib/i18n";
-import { products } from "../../../../lib/products";
+import { getProductBySlug } from "../../../../lib/productRepository";
 
-export function generateStaticParams() {
-  return products.flatMap(product => [
-    { locale: "fr", slug: product.slug },
-    { locale: "en", slug: product.slug },
-  ]);
-}
+export const dynamic = "force-dynamic";
 
 export default async function ProductPage({ params }) {
   const { locale, slug } = await params;
-  const product = products.find(item => item.slug === slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 
@@ -28,7 +23,16 @@ export default async function ProductPage({ params }) {
 
       <main className="container section">
         <div className="product-page">
-          <div className="product-visual">{product.emoji}</div>
+          <div className="product-visual">
+            {product.images?.[0]?.url ? (
+              <img
+                src={product.images[0].url}
+                alt={fr ? product.images[0].altFr || name : product.images[0].altEn || name}
+              />
+            ) : (
+              product.emoji
+            )}
+          </div>
 
           <div className="product-info">
             <span className="eyebrow">
