@@ -1,7 +1,9 @@
 import Header from "../../../components/Header";
 import ProductCard from "../../../components/ProductCard";
 import { getDictionary } from "../../../lib/i18n";
-import { products } from "../../../lib/products";
+import { getProducts } from "../../../lib/productRepository";
+
+export const dynamic = "force-dynamic";
 
 export default async function ProductsPage({ params, searchParams }) {
   const { locale } = await params;
@@ -9,9 +11,7 @@ export default async function ProductsPage({ params, searchParams }) {
   const t = getDictionary(locale);
 
   const category = filters?.category;
-  const filteredProducts = category
-    ? products.filter(product => product.category === category)
-    : products;
+  const products = await getProducts({ category });
 
   const title =
     locale === "en"
@@ -35,11 +35,11 @@ export default async function ProductsPage({ params, searchParams }) {
             <span className="eyebrow">NekoPaw Shop</span>
             <h1>{title}</h1>
           </div>
-          <span className="catalog-count">{filteredProducts.length} produits / products</span>
+          <span className="catalog-count">{products.length} produits / products</span>
         </div>
 
         <div className="grid">
-          {filteredProducts.map(product => (
+          {products.map(product => (
             <ProductCard
               key={product.id}
               product={product}
